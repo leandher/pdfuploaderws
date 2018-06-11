@@ -27,20 +27,7 @@ public class HomeController {
 	public ResponseEntity<String> salvar(@RequestParam("file") MultipartFile file, @RequestParam("cpf") String cpf,
 			HttpServletRequest request) {
 		try {
-			String ipCliente = request.getRemoteAddr();
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh:mm:ss");
-			String data = simpleDateFormat.format(new Date());
-			
-			StringBuilder sb = new StringBuilder();
-			sb.append(cpf);
-			sb.append("-");
-			sb.append(ipCliente);
-			sb.append("-");
-			sb.append(data);
-
-			System.err.println(sb.toString());
-
-			return new ResponseEntity<String>(homeService.saveFile(file, request), HttpStatus.OK);
+			return new ResponseEntity<String>(homeService.saveFile(file, cpf, request), HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<String>("Error", HttpStatus.INTERNAL_SERVER_ERROR);
