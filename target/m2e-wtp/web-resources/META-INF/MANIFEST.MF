@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Built-By: leandher
-Build-Jdk: 1.8.0_121
+Build-Jdk: 1.8.0_171
 Implementation-Title: pdfUploaderWS
 Implementation-Version: 0.0.1-SNAPSHOT
 Implementation-Vendor-Id: br.com.pdfUploaderWS
