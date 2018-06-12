@@ -18,8 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class UploadArquivos {
 
-	public String uploadAnexo(MultipartFile file, String hash,
-			HttpServletRequest request) throws IOException {
+	public String uploadAnexo(MultipartFile file, String hash, HttpServletRequest request) throws IOException {
 
 		String path = "";
 		try {
@@ -27,17 +26,14 @@ public class UploadArquivos {
 
 			// Criando diretório para salvar o arquivo
 			String uploadsDir = "/public/upload/";
-			String realPathtoUploads = request.getServletContext().getRealPath(
-					uploadsDir);
+			String realPathtoUploads = request.getServletContext().getRealPath(uploadsDir);
 			File dir = new File(realPathtoUploads);
 			if (!dir.exists())
 				dir.mkdirs();
 
 			// Criando o arquivo no servidor
-			File serverFile = new File(dir.getAbsolutePath() + File.separator
-					+ file.getOriginalFilename());
-			BufferedOutputStream stream = new BufferedOutputStream(
-					new FileOutputStream(serverFile));
+			File serverFile = new File(dir.getAbsolutePath() + File.separator + file.getOriginalFilename());
+			BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
 			stream.write(bytes);
 			stream.close();
 
@@ -54,8 +50,20 @@ public class UploadArquivos {
 		return path;
 	}
 
-	public void printHash(File file, String message, File outfile)
-			throws IOException {
+	/**
+	 * Imprime a hash no arquivo
+	 *
+	 * @param file
+	 *            Arquivo de entrada.
+	 * @param message
+	 *            Hash que será escrita.
+	 * @param outfile
+	 *            Arquivo de saída.
+	 *
+	 * @throws IOException
+	 *             Se ocorrer um erro ao escrever o arquivo e deleta o mesmo do diretório.
+	 */
+	public void printHash(File file, String message, File outfile) throws IOException {
 		try (PDDocument doc = PDDocument.load(file)) {
 			PDFont font = PDType1Font.HELVETICA_BOLD;
 			float fontSize = 7.0f;
@@ -66,8 +74,8 @@ public class UploadArquivos {
 				boolean rotate = rotation == 90 || rotation == 270;
 
 				// adiciona o conteudo ao arquivo
-				try (PDPageContentStream contentStream = new PDPageContentStream(
-						doc, page, AppendMode.APPEND, true, true)) {
+				try (PDPageContentStream contentStream = new PDPageContentStream(doc, page, AppendMode.APPEND, true,
+						true)) {
 
 					contentStream.beginText();
 					contentStream.setFont(font, fontSize);
@@ -76,8 +84,7 @@ public class UploadArquivos {
 						// rotaciona o texto de acordo com a rotação da página
 						contentStream.setTextMatrix(Matrix.getRotateInstance(Math.PI / 2, 2, 1));
 					} else {
-						contentStream.setTextMatrix(Matrix
-								.getTranslateInstance(2, 1));
+						contentStream.setTextMatrix(Matrix.getTranslateInstance(2, 1));
 					}
 					contentStream.showText(message);
 					contentStream.endText();
@@ -85,6 +92,9 @@ public class UploadArquivos {
 			}
 
 			doc.save(outfile);
+		} catch (IOException e) {
+			file.delete();
+			throw new IOException();
 		}
 	}
 }
